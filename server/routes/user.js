@@ -4,14 +4,14 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 
-
-
 const Usuario = require('../models/user');
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion')
 
 
 const app = express();
 
-app.get('/user', function(req, res) {
+app.get('/user', verificaToken, (req, res) => {
+
 
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -46,7 +46,7 @@ app.get('/user', function(req, res) {
 
 });
 
-app.post('/user', function(req, res) {
+app.post('/user', [verificaToken, verificaAdmin_Role], function(req, res) {
 
     let body = req.body;
 
@@ -80,7 +80,9 @@ app.post('/user', function(req, res) {
 });
 
 
-app.put('/user/:id', function(req, res) {
+app.put('/user/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
+
+
 
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
@@ -104,7 +106,9 @@ app.put('/user/:id', function(req, res) {
 });
 
 
-app.delete('/user/:id', function(req, res) {
+app.delete('/user/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
+
+
 
     let id = req.params.id;
     let cambiaEstado = {
@@ -113,7 +117,7 @@ app.delete('/user/:id', function(req, res) {
 
     Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
 
-        // let id = req.params.id;
+        //let id = req.params.id;
 
         //Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
 
