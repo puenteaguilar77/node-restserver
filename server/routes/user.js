@@ -146,7 +146,7 @@ app.delete('/user/:id', [verificaToken, verificaAdmin_Role], function(req, res) 
 
     })
 
-})
+});
 
 
 
